@@ -10,6 +10,10 @@ a <- c(1,2,3,4)  #数据型向量
 b <- c("one","two","three")  #字符型向量
 c <- c(TRUE, FALSE, TRUE, FALSE)  #逻辑型向量
 可以通过中括号访问某个元素，例如a[2]是a的第二个元素，a[c(z,4)]是a的第二和第四个元素
+赋值给向量、矩阵、数组或列表中某个不存在的元素时，会自动扩展数据结构，例如
+a <- c(1,2,3)
+a[5] <- 10  #给a的第五个元素赋值为10
+a此时有a=（1,2,3，N/A，10）
 
 2.2矩阵：几行几列，使用matrix()创建，矩阵内部的元素的数据模式必须相同
 matrix(vector, nrow=number,ncol=number, byrow=T/F, dimnames=list(rownames,colnames))
