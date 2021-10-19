@@ -1,0 +1,5 @@
+R可以从文本文件（如ASCII、XML、web抓取）、统计软件（SAS、SPSS、stata）、键盘输入、数据库（SQL、oracle、access）、其他（excel）导入数据。
+1.键盘输入有两种，使用edit函数或者
+mydata <- data.frame(age=numeric(0), weight=numeric(0))
+mydata <- edit(mydata)
+创建了一个数据框，其中age和weight是数据框内的变量，赋值语句age=numeric(0)创建了一个指定模式但不含实际数据的变量
