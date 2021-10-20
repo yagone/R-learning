@@ -1,5 +1,56 @@
 R可以从文本文件（如ASCII、XML、web抓取）、统计软件（SAS、SPSS、stata）、键盘输入、数据库（SQL、oracle、access）、其他（excel）导入数据。
-1.键盘输入有两种，使用edit函数或者
+1.键盘输入有两种，使用edit函数或者用字符代替edit
 mydata <- data.frame(age=numeric(0), weight=numeric(0))
 mydata <- edit(mydata)
 创建了一个数据框，其中age和weight是数据框内的变量，赋值语句age=numeric(0)创建了一个指定模式但不含实际数据的变量
+然后用edit去编辑这个数据框，会出现新的编辑窗口，单击列名可以修改，单击新的列名可以加入新的变量
+最后返回到这个数据框，一定要回到原变量中，否则所有编辑会丢失
+mydatatxt <- "
+age gender weight
+25 m 166
+30 f 115
+18 f 120
+"
+mydata <- read.table(header="TRUE", text=mydatatxt)
+利用""创建了一个与edit一样的数据框，手动输入，然后用read函数计入变量mydata中
+
+2.带分隔符的文本文件中导入
+read.table(file, options)  #options包含了很多选项
+header表示一个文件是否在第一行包含了变量名
+sep表示分隔符，例如“ ”、“，” “\t”
+row.names用于指定一个或多个行标记符
+col.names如果第一行不包括变量名，可以用col.names去指定一个包含变量名的字符向量
+na.strings可选的、用于表示缺失值的字符向量，例如na.stranges=c("9","?")即把9和？识别为NA
+skip跳过原始数据中的某几行
+colclass指定列的数据类型，例如colclass=c("numeric","numeric")
+stringsAsFactors是否转化为因子。逻辑变量和字符向量在R中默认转化为因子，也就是该项默认为TRUE，除非被colclass覆盖，设置为FALSE可以放置识别为因子，加快处理速度
+也可以通过连接导入数据，例如file()可以访问文件、剪切板等，gzfile、bzfile、xzfile可以访问压缩文件，url可以访问链接等
+
+3.导入excel数据
+导入excel最简单的办法就是将其保存为一个逗号分割的csv文件，然后用上面的导入带分隔符的文本文件的方式导入。也可以下载xlsx包加载excel表
+xlsx可以加载excel97、2000、xp、2003、2007，最简单的格式是read.xlsx(file, n) file是工作路径，n是表单序号，也可以指定行列rowindex和colindex，也可以指定列的类colclass
+
+4.导入spss数据
+spss数据集可通过foreign包中的函数read.spss()导入到R中，也可以用hmisc包中的spss.get函数
+后者是前者的封装，自动设置了前者的许多参数，转换过程更简单，使用h包必须先下载f包
+install.packages("foreign")
+install.packages("Hmisc")
+library("Hmisc")
+dataframe <- spss.get("data.sav", use.value.labels="TRUE")  #use表示让函数带有值标签的变量导入为R中水平对应相同的因子
+
+5.导入sas数据
+导入sas数据有foreign包中的read.ssd()函数、Hmisc包中的sas.get()函数、sas7dbat包中的read.sas7dbat()函数
+library(Hmisc)
+datadir <- "C:/mydata"  #将包含了SAS数据集的文件路径赋值给变量datadir
+sasexe <- "C:/Program Files/SASFoundation/9.4/sas.exe  #将一个可运行的sas程序的完整路径赋值给变量sasexe
+mydata <- sas.get(libraryName=datadir, member="clients", sasprog=sasexe)  #将名为clients的ses数据导入，它的位置在libraryName，可执行的SAS路径在sasprog
+或者可以将sas保存为一个逗号分割的文本文件，用read.table读取
+这两种方法都需要已经安装了SAS软件，安装了sas，sas.get很好，如果没有，用read.sas7dbat()或许更好
+library(sas7dbat)
+data <- read.sas7dbat("C:/mydata/clients.sas7dbat")
+
+6.导入stata数据
+library(foreign)
+data <- read.dta("mudata.dta")
+
+导入XML数据、导入web抓取数据、导入netcdf数据、导入hdf5数据、导入各类数据库系统的数据，有些复杂，不再赘述
